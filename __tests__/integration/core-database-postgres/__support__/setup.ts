@@ -9,7 +9,7 @@ jest.setTimeout(60000);
 export const setUp = async () => {
     await setUpContainer({
         exit: "@arkecosystem/core-database-postgres",
-        exclude: ["@arkecosystem/core-database-postgres"],
+        exclude: ["@arkecosystem/core-database-postgres", "@nosplatform/storage"],
     });
 
     process.env.CORE_RESET_DATABASE = "1";
@@ -22,7 +22,7 @@ export const setUp = async () => {
         connection: {
             host: "localhost",
             port: 5432,
-            database: "ark_unitnet",
+            database: "nos_unitnet",
             user: "ark",
             password: "password",
         },

@@ -7,7 +7,6 @@ module.exports = {
         },
         minimumNetworkReach: 5,
     },
-    "@nosplatform/storage": {},
     "@nosplatform/stake-transactions": {},
     "@arkecosystem/core-state": {},
     "@arkecosystem/core-magistrate-transactions": {},
@@ -21,6 +20,7 @@ module.exports = {
         },
     },
     "@nosplatform/storage": {},
+    "@nosplatform/supply-tracker": {},
     "@arkecosystem/core-transaction-pool": {
         enabled: true,
         maxTransactionsPerSender: process.env.CORE_TRANSACTION_POOL_MAX_PER_SENDER || 300,

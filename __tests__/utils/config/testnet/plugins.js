@@ -16,11 +16,12 @@ module.exports = {
         connection: {
             host: process.env.CORE_DB_HOST || "localhost",
             port: process.env.CORE_DB_PORT || 5432,
-            database: process.env.CORE_DB_DATABASE || `${process.env.CORE_TOKEN}_unitnet`,
-            user: process.env.CORE_DB_USERNAME || process.env.CORE_TOKEN,
-            password: process.env.CORE_DB_PASSWORD || "password",
+            database: `nos_unitnet`,
+            user: `ark`,
+            password: "password",
         },
     },
+    "@nosplatform/supply-tracker": {},
     "@arkecosystem/core-transaction-pool": {
         enabled: !process.env.CORE_TRANSACTION_POOL_DISABLED,
         maxTransactionsPerSender: process.env.CORE_TRANSACTION_POOL_MAX_PER_SENDER || 300,

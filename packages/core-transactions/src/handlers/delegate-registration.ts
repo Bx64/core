@@ -1,6 +1,7 @@
 import { ApplicationEvents } from "@arkecosystem/core-event-emitter";
 import { Database, EventEmitter, State, TransactionPool } from "@arkecosystem/core-interfaces";
 import { Enums, Interfaces, Transactions, Utils } from "@arkecosystem/crypto";
+import { TopRewards } from "@nosplatform/top-rewards";
 import {
     NotSupportedForMultiSignatureWalletError,
     WalletIsAlreadyDelegateError,
@@ -30,7 +31,11 @@ export class DelegateRegistrationTransactionHandler extends TransactionHandler {
             "delegate.round",
             "delegate.username",
             "delegate.voteBalance",
+            "delegate.forgedFees",
+            "delegate.forgedRewards",
             "delegate.forgedTotal",
+            "delegate.removedFees",
+            "delegate.forgedTopRewards",
             "delegate.approval",
         ];
     }
@@ -50,11 +55,12 @@ export class DelegateRegistrationTransactionHandler extends TransactionHandler {
                     username: transaction.asset.delegate.username,
                     voteBalance: Utils.BigNumber.ZERO,
                     forgedFees: Utils.BigNumber.ZERO,
+                    removedFees: Utils.BigNumber.ZERO,
                     forgedRewards: Utils.BigNumber.ZERO,
+                    forgedTopRewards: Utils.BigNumber.ZERO,
                     producedBlocks: 0,
                     rank: undefined,
                 });
-
                 walletManager.reindex(wallet);
             }
         }
@@ -70,11 +76,13 @@ export class DelegateRegistrationTransactionHandler extends TransactionHandler {
 
             delegate.forgedFees = delegate.forgedFees.plus(block.totalFees);
             delegate.forgedRewards = delegate.forgedRewards.plus(block.totalRewards);
+            delegate.removedFees = delegate.removedFees.plus(block.removedFees);
             delegate.producedBlocks += +block.totalProduced;
         }
 
         for (const block of lastForgedBlocks) {
             const wallet = walletManager.findByPublicKey(block.generatorPublicKey);
+            await TopRewards.applyReward(block, walletManager);
             wallet.setAttribute("delegate.lastBlock", block);
         }
     }
@@ -169,7 +177,9 @@ export class DelegateRegistrationTransactionHandler extends TransactionHandler {
             username: transaction.data.asset.delegate.username,
             voteBalance: Utils.BigNumber.ZERO,
             forgedFees: Utils.BigNumber.ZERO,
+            removedFees: Utils.BigNumber.ZERO,
             forgedRewards: Utils.BigNumber.ZERO,
+            forgedTopRewards: Utils.BigNumber.ZERO,
             producedBlocks: 0,
             round: 0,
         });

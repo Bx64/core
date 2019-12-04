@@ -2,7 +2,9 @@ import { app } from "@arkecosystem/core-container";
 import { Logger, Shared, State } from "@arkecosystem/core-interfaces";
 import { Handlers, Interfaces as TransactionInterfaces } from "@arkecosystem/core-transactions";
 import { Enums, Identities, Interfaces, Managers, Utils } from "@arkecosystem/crypto";
+import { TopRewards } from "@nosplatform/top-rewards";
 import pluralize from "pluralize";
+
 import { WalletIndexAlreadyRegisteredError, WalletIndexNotFoundError } from "./errors";
 import { TempWalletManager } from "./temp-wallet-manager";
 import { Wallet } from "./wallet";
@@ -292,6 +294,8 @@ export class WalletManager implements State.IWalletManager {
                 const voteBalance: Utils.BigNumber = votedDelegate.getAttribute("delegate.voteBalance");
                 votedDelegate.setAttribute("delegate.voteBalance", voteBalance.plus(increase));
             }
+
+            await TopRewards.applyReward(block.data, this);
         } catch (error) {
             this.logger.error("Failed to apply all transactions in block - reverting previous transactions");
 
@@ -334,6 +338,8 @@ export class WalletManager implements State.IWalletManager {
                 const voteBalance: Utils.BigNumber = votedDelegate.getAttribute("delegate.voteBalance");
                 votedDelegate.setAttribute("delegate.voteBalance", voteBalance.minus(decrease));
             }
+
+            await TopRewards.revertReward(block.data, this);
         } catch (error) {
             this.logger.error(error.stack);
 
@@ -485,7 +491,7 @@ export class WalletManager implements State.IWalletManager {
             // Check if transaction is of type stakeCreate
             const delegate: State.IWallet = this.findByPublicKey(sender.getAttribute("vote"));
             let voteBalance: Utils.BigNumber = delegate.getAttribute("delegate.voteBalance", Utils.BigNumber.ZERO);
-            if (transaction.type === 1) {
+            if (transaction.type === 0) {
                 const s = transaction.asset.stakeCreate;
                 const multiplier: number = milestone.stakeLevels[s.duration];
                 const sWeight: Utils.BigNumber = s.amount.times(multiplier).dividedBy(10);
@@ -494,8 +500,8 @@ export class WalletManager implements State.IWalletManager {
                 voteBalance = revert
                     ? voteBalance.minus(sWeight).plus(balanceWithFeeFixed)
                     : voteBalance.minus(balanceWithFeeFixed).plus(sWeight);
-            } else if (transaction.type === 2) {
-                const s = sender.getAttribute("stakes")[transaction.asset.stakeRedeem.txId];
+            } else if (transaction.type === 1) {
+                const s = sender.getAttribute("stakes")[transaction.asset.stakeRedeem.id];
                 voteBalance = revert
                     ? voteBalance
                           .plus(s.weight)

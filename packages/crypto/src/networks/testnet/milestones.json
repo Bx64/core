@@ -2,6 +2,8 @@
     {
         "height": 1,
         "reward": 0,
+        "topReward": 0,
+        "topDelegates": 5,
         "activeDelegates": 51,
         "blocktime": 8,
         "block": {
@@ -27,17 +29,19 @@
                 "stakeRedeem": 0
             }
         },
+        "vendorFieldLength": 64,
+        "multiPaymentLimit": 256,
+        "aip11": true,
         "balanceWeight": 1,
         "stakeLevels": {
+            "20": 20,
             "120": 30,
             "7889400": 60,
             "15778800": 85,
             "31557600": 110
         },
         "minimumStake": 1000000000000,
-        "vendorFieldLength": 64,
-        "multiPaymentLimit": 256,
-        "aip11": true
+        "vestedWalletPublicKey": "none"
     },
     {
         "height": 75600,

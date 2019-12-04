@@ -13,6 +13,6 @@
     "client": {
         "token": "TARK",
         "symbol": "TѦ",
-        "explorer": "http://texplorer.ark.io"
+        "explorer": "http://localhost:8080"
     }
 }
