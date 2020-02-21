@@ -20,7 +20,7 @@ export interface IWallet {
     nonce: Utils.BigNumber;
 
     applyBlock(block: Interfaces.IBlockData): boolean;
-    revertBlock(block: Interfaces.IBlockData): boolean;
+    revertBlock(block: Interfaces.IBlockData): Promise<boolean>;
 
     auditApply(transaction: Interfaces.ITransactionData): any[];
     toString(): string;

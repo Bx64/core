@@ -113,8 +113,8 @@ describe("Models - Wallet", () => {
             testWallet = clonedeep(Object.assign(testWallet, walletInit));
         });
 
-        it("should revert block if generator public key matches the wallet public key", () => {
-            const success = testWallet.revertBlock(block);
+        it("should revert block if generator public key matches the wallet public key", async () => {
+            const success = await testWallet.revertBlock(block);
             const initDelegate: State.IWalletDelegateAttributes = walletInit.getAttribute("delegate");
             const testDelegate: State.IWalletDelegateAttributes = testWallet.getAttribute("delegate");
 
@@ -127,12 +127,12 @@ describe("Models - Wallet", () => {
             expect(testDelegate.lastBlock).toBeUndefined();
         });
 
-        it("should revert block if generator public key matches the wallet address", () => {
+        it("should revert block if generator public key matches the wallet address", async () => {
             testWallet.publicKey = undefined;
             const initDelegate: State.IWalletDelegateAttributes = walletInit.getAttribute("delegate");
             const testDelegate: State.IWalletDelegateAttributes = testWallet.getAttribute("delegate");
 
-            const success = testWallet.revertBlock(block);
+            const success = await testWallet.revertBlock(block);
 
             expect(success).toBeTrue();
             expect(testWallet.balance).toEqual(walletInit.balance.minus(block.reward).minus(block.totalFee));
@@ -143,10 +143,10 @@ describe("Models - Wallet", () => {
             expect(testDelegate.lastBlock).toBeUndefined();
         });
 
-        it("should not revert block if generator public key doesn't match the wallet address / publicKey", () => {
+        it("should not revert block if generator public key doesn't match the wallet address / publicKey", async () => {
             const invalidWallet = Object.assign({}, walletInit, { publicKey: undefined, address: undefined });
             testWallet = Object.assign(testWallet, invalidWallet);
-            const success = testWallet.revertBlock(block);
+            const success = await testWallet.revertBlock(block);
 
             expect(success).toBeFalse();
             for (const key of Object.keys(invalidWallet)) {

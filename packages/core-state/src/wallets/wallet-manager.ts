@@ -324,7 +324,7 @@ export class WalletManager implements State.IWalletManager {
                 revertedTransactions.push(transaction);
             }
 
-            const reverted: boolean = delegate.revertBlock(block.data);
+            const reverted: boolean = await delegate.revertBlock(block.data);
 
             // If the block has been reverted, the balance is decreased
             // by reward + totalFee. In which case the vote balance of the
